@@ -5,7 +5,7 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-#include "de_brujin.cpp"
+#include "de_brujin.c"
 
 #define RX_433 2 
 #define TX_433 3
@@ -18,7 +18,7 @@ static const char *TAG = "main";
 
 
 
-extern "C" void app_main(void)
+void app_main(void)
 {
     gpio_reset_pin(RX_433);
     gpio_set_direction(RX_433, GPIO_MODE_INPUT);
