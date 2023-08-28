@@ -8,7 +8,8 @@
                 "${config:idf.espIdfPathWin}/components/**",
                 "${config:idf.espAdfPath}/components/**",
                 "${config:idf.espAdfPathWin}/components/**",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:/Users/Sebi/.espressif/tools/xtensa-esp32-elf/esp-2022r1-11.2.0/xtensa-esp32-elf/xtensa-esp32-elf/include/c++/11.2.0/xtensa-esp32-elf"
             ],
             "browse": {
                 "path": [
