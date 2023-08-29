@@ -93,18 +93,19 @@ char* de_bruijn_binary(int n)
     const int k = 2;
     const int len = (2 << n) + n - 1;// 10x slowe with pow (int)pow(k, n) + n - 1;
 
-    // int* a = malloc(sizeof(int) * k * n);
-    // if (a == NULL) return NULL;
-    // memset(a, 0, sizeof(int) * k * n);
-    int* a = calloc(k * n, sizeof(int));
+    int* a = malloc(sizeof(int) * k * n);
     if (a == NULL) return NULL;
+    memset(a, 0, sizeof(int) * k * n);
+    // int* a = malloc(k * n, sizeof(int));
+    // if (a == NULL) return NULL;
 
-    // char* sequence = malloc(sizeof(char) * len + 1);
-    // if (sequence == NULL) return NULL;
-    // memset(sequence, 0, sizeof(char) * len + 1);
 
-    char* sequence = calloc(len + 1, sizeof(char));
+    char* sequence = malloc(sizeof(char) * len + 1);
     if (sequence == NULL) return NULL;
+    memset(sequence, 0, sizeof(char) * len + 1);
+
+    // char* sequence = calloc(len + 1, sizeof(char));
+    // if (sequence == NULL) return NULL;
 
     // Generate sequence
     db_bin(1, 1, n, len, k, a, sequence);
