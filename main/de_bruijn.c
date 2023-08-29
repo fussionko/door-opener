@@ -51,8 +51,10 @@ char* de_bruijn(char* charset, int n, int maxlen) {
     return sequence;
 }
 
+#define BIN_K 2
+
 // Generate a De Bruijn sequence. Code interpreted from wikipedia. https://gist.github.com/crowell/77b601db16562ac49834
-void db_bin(int t, int p, int n, int maxlen, int k, int* a, char* sequence) 
+void db_bin(int t, int p, int n, int maxlen, int* a, char* sequence) 
 {
     size_t seq_len = strlen(sequence);
     if (seq_len == maxlen) return;
@@ -73,14 +75,14 @@ void db_bin(int t, int p, int n, int maxlen, int k, int* a, char* sequence)
     else 
     {
         a[t] = a[t - p];
-        db_bin(t + 1, p, n, maxlen, k, a, sequence);
+        db_bin(t + 1, p, n, maxlen, a, sequence);
 
         // Loop trough alphabet
 
-        for (int j = a[t - p] + 1; j < k; ++j) 
+        for (int j = a[t - p] + 1; j < BIN_K; ++j) 
         {
             a[t] = j;
-            db_bin(t + 1, t, n, maxlen, k, a, sequence);
+            db_bin(t + 1, t, n, maxlen, a, sequence);
         }
     }
 }
@@ -89,13 +91,12 @@ void db_bin(int t, int p, int n, int maxlen, int k, int* a, char* sequence)
 // need to be free by caller
 char* de_bruijn_binary(int n)
 {
-    // Alphabet length = 2
-    const int k = 2;
-    const int len = (2 << n) + n - 1;// 10x slowe with pow (int)pow(k, n) + n - 1;
+    // Alphabet length = 2 BIN_K
+    const int len = (BIN_K << n) + n - 1;// 10x slowe with pow (int)pow(k, n) + n - 1;
 
-    int* a = malloc(sizeof(int) * k * n);
+    int* a = malloc(sizeof(int) * BIN_K * n);
     if (a == NULL) return NULL;
-    memset(a, 0, sizeof(int) * k * n);
+    memset(a, 0, sizeof(int) * BIN_K * n);
     // int* a = malloc(k * n, sizeof(int));
     // if (a == NULL) return NULL;
 
@@ -108,7 +109,7 @@ char* de_bruijn_binary(int n)
     // if (sequence == NULL) return NULL;
 
     // Generate sequence
-    db_bin(1, 1, n, len, k, a, sequence);
+    db_bin(1, 1, n, len,  a, sequence);
 
     free(a);
 
